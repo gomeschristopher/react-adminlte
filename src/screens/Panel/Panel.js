@@ -25,16 +25,16 @@ export default function Panel() {
                     <div className="sidebar-wrapper">
                         <nav className="mt-2">
                             <ul className="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                                <li className="nav-item"> <a href="./generate/theme.html" className="nav-link active"> <i className="nav-icon bi bi-palette"></i>
-                                    <p>Theme Generate</p>
+                                <li className="nav-item"> <a className="nav-link active"> <i className="nav-icon bi bi-palette"></i>
+                                    <p>Clientes</p>
                                 </a> </li>
-                                <li className="nav-item"> <a href="./docs/introduction.html" className="nav-link"> <i className="nav-icon bi bi-download"></i>
+                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-download"></i>
                                     <p>Installation</p>
                                 </a> </li>
-                                <li className="nav-item"> <a href="./docs/layout.html" className="nav-link"> <i className="nav-icon bi bi-grip-horizontal"></i>
+                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-grip-horizontal"></i>
                                     <p>Layout</p>
                                 </a> </li>
-                                <li className="nav-item"> <a href="./docs/color-mode.html" className="nav-link"> <i className="nav-icon bi bi-star-half"></i>
+                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-star-half"></i>
                                     <p>Color Mode</p>
                                 </a> </li>
                             </ul>

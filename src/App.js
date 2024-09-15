@@ -1,10 +1,13 @@
 import './App.css';
 import Auth from './screens/Auth';
 import Panel from './screens/Panel/Panel';
+import ClientsContextProvider from './store/clients-context';
 
 function App() {
   return (
-    <Panel />
+    <ClientsContextProvider>
+      <Panel />
+    </ClientsContextProvider>
   );
 }
 

@@ -2,7 +2,7 @@ export default function Auth() {
     return (
         <div className="login-page bg-body-secondary">
             <div className="login-box">
-                <div className="login-logo"> <a href="../index2.html"><b>Admin</b>LTE</a> </div>
+                <div className="login-logo"> <a><b>Admin</b>LTE</a> </div>
                 <div className="card">
                     <div className="card-body login-card-body">
                         <p className="login-box-msg">Sign in to start your session</p>

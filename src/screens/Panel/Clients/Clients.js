@@ -1,27 +1,41 @@
-import ClientForm from "./Screens/ClientForm";
-import ClientsOutput from "./Screens/ClientsOutput";
+import { useContext, useState } from "react";
+
+import ClientForm from "./components/ClientForm";
+import ClientsOutput from "./components/ClientsOutput";
+import { ClientsContext } from "../../../store/clients-context";
 
 export default function Clients() {
+    const clientsCtx = useContext(ClientsContext);
+
+    const [isClientFormOpen, setIsClientFormOpen] = useState(false);
+
+    function handleAddClient(clientData) {
+        clientData = {
+            ...clientData,
+            id: Math.random()
+        };
+        clientsCtx.addClient(clientData);
+        
+        setIsClientFormOpen(false);
+    }
+
+    const clients = clientsCtx.clients;
+
     return (
         <>
             <div className="app-content-header">
                 <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <h3 className="mb-0">Clientes</h3>
-                        </div>
-                        <div className="col-sm-6">
-                            <ol className="breadcrumb float-sm-end">
-                                <li className="breadcrumb-item"><a href="#">Home</a></li>
-                                <li className="breadcrumb-item active" aria-current="page">
-                                    Simple Tables
-                                </li>
-                            </ol>
-                        </div>
+                    <div className="d-flex justify-content-between">
+                        <h3 className="mb-0">Clientes</h3>
+                        <button className="btn btn-secondary" onClick={() => setIsClientFormOpen(true)}>Novo</button>
                     </div>
                 </div>
             </div>
-            <ClientsOutput />
+            {isClientFormOpen ? (
+                <ClientForm onAdd={handleAddClient} />
+            ) : (
+                <ClientsOutput clients={clients} />
+            )}
         </>
     )
 }
