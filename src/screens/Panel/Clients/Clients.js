@@ -8,18 +8,45 @@ export default function Clients() {
     const clientsCtx = useContext(ClientsContext);
 
     const [isClientFormOpen, setIsClientFormOpen] = useState(false);
+    const [selectedClient, setSelectedClient] = useState();
 
-    function handleAddClient(clientData) {
-        clientData = {
-            ...clientData,
-            id: Math.random()
-        };
-        clientsCtx.addClient(clientData);
-        
+    const clients = clientsCtx.clients;
+
+    function handleSaveClient(clientData) {
+        if (!clientData.id) {
+            clientData = {
+                ...clientData,
+                id: Math.random()
+            };
+            clientsCtx.addClient(clientData);
+        } else {
+            clientsCtx.updateClient(clientData.id, clientData);
+        }
+
         setIsClientFormOpen(false);
     }
 
-    const clients = clientsCtx.clients;
+    function onEditClient(clientId) {
+        console.log(clientId)
+        const client = clients.find(client => client.id === clientId);
+        setSelectedClient({ ...client });
+        setIsClientFormOpen(true);
+    }
+
+    function handleCreateNewClient() {
+        setSelectedClient({
+            id: null,
+            name: '',
+            phone: '',
+            email: ''
+        });
+
+        setIsClientFormOpen(true);
+    }
+
+    function handleRemoveClient(clientId) {
+        clientsCtx.deleteClient(clientId);
+    }
 
     return (
         <>
@@ -27,14 +54,14 @@ export default function Clients() {
                 <div className="container-fluid">
                     <div className="d-flex justify-content-between">
                         <h3 className="mb-0">Clientes</h3>
-                        <button className="btn btn-secondary" onClick={() => setIsClientFormOpen(true)}>Novo</button>
+                        <button className="btn btn-secondary" onClick={handleCreateNewClient}>Novo</button>
                     </div>
                 </div>
             </div>
             {isClientFormOpen ? (
-                <ClientForm onAdd={handleAddClient} />
+                <ClientForm onAdd={handleSaveClient} defaultValues={selectedClient} />
             ) : (
-                <ClientsOutput clients={clients} />
+                <ClientsOutput clients={clients} editClient={onEditClient} removeClient={handleRemoveClient} />
             )}
         </>
     )

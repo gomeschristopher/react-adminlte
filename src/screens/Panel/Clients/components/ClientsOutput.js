@@ -1,4 +1,4 @@
-export default function ClientsOutput({ clients }) {
+export default function ClientsOutput({ clients, editClient, removeClient }) {
     return (
         <div className="app-content">
             <div className="container-fluid">
@@ -15,6 +15,7 @@ export default function ClientsOutput({ clients }) {
                                             <th>Nome</th>
                                             <th>Telefone</th>
                                             <th>Email</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -24,6 +25,16 @@ export default function ClientsOutput({ clients }) {
                                                     <td>{client.name}</td>
                                                     <td>{client.phone}</td>
                                                     <td>{client.email}</td>
+                                                    <td>
+                                                        <div className="btn-group">
+                                                            <button className="btn btn-secondary" onClick={() => editClient(client.id)}>
+                                                                <i className="bi bi-pencil-square"></i>
+                                                            </button>
+                                                            <button className="btn btn-danger" onClick={() => removeClient(client.id)}>
+                                                                <i className="bi bi-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             )
                                         })}

@@ -1,28 +1,46 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import Input from "../../../../components/Input";
+import { useInput } from "../../../../hooks/useInput";
 
-export default function ClientForm({ onAdd }) {
-    const name = useRef();
-    const phone = useRef();
-    const email = useRef();
+export default function ClientForm({ onAdd, defaultValues }) {
+    const {
+        value: nameValue,
+        handleInputChange: handleNameChange,
+        handleInputBlur: handleNameBlur,
+        hasError: nameHasError
+    } = useInput(defaultValues.name ? defaultValues.name : '',
+        (value) => value.trim() !== '');
+
+    const {
+        value: emailValue,
+        handleInputChange: handleEmailChange,
+        handleInputBlur: handleEmailBlur,
+        hasError: emailHasError
+    } = useInput(defaultValues.email ? defaultValues.email : '', (value) => value.trim() !== '');
+
+    const {
+        value: phoneValue,
+        handleInputChange: handlePhoneChange,
+        handleInputBlur: handlePhoneBlur,
+        hasError: phoneHasError
+    } = useInput(defaultValues.phone ? defaultValues.phone : '', (value) => value.trim() !== '');
+
     const [formIsInvalid, setFormIsInvalid] = useState(false);
 
-    function handleSave() {
-        const enteredName = name.current.value;
-        const enteredPhone = phone.current.value;
-        const enteredEmail = email.current.value;
+    function handleSave(event) {
+        event.preventDefault();
 
-        if (enteredName.trim() === '' || enteredPhone.trim() === '' ||
-            enteredEmail.trim() === '') {
+        if (nameHasError || emailHasError || phoneHasError) {
             setFormIsInvalid(true);
             return;
         }
 
         onAdd({
-            name: enteredName,
-            phone: enteredPhone,
-            email: enteredEmail
+            id: defaultValues.id,
+            name: nameValue,
+            phone: phoneValue,
+            email: emailValue
         });
     }
 
@@ -43,22 +61,39 @@ export default function ClientForm({ onAdd }) {
                             <div className="card-header">
                                 <div className="card-title">Form Validation</div>
                             </div>
-                            <div className="card-body">
-                                <div className="row g-3">
-                                    <div className="col-md-6">
-                                        <Input ref={name} label="Nome" />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <Input ref={phone} label="Telefone" />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <Input ref={email} label="E-mail" />
+                            <form onSubmit={handleSave}>
+                                <div className="card-body">
+                                    <div className="row g-3">
+                                        <div className="col-md-6">
+                                            <Input placeholder="Name"
+                                                onBlur={handleNameBlur}
+                                                onChange={handleNameChange}
+                                                value={nameValue}
+                                                error={nameHasError && 'Insira um nome válido'} label="Nome"
+                                                required />
+                                        </div>
+                                        <div className="col-md-6">
+                                            <Input placeholder="Phone"
+                                                onBlur={handlePhoneBlur}
+                                                onChange={handlePhoneChange}
+                                                value={phoneValue}
+                                                error={phoneHasError && 'Insira um telefone válido'} label="Telefone"
+                                                required />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <Input placeholder="Email"
+                                                onBlur={handleEmailBlur}
+                                                onChange={handleEmailChange}
+                                                value={emailValue}
+                                                error={emailHasError && 'Insira um e-mail válido'} label="Email"
+                                                required />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="card-footer">
-                                <button className="btn btn-secondary" onClick={handleSave}>Salvar</button>
-                            </div>
+                                <div className="card-footer">
+                                    <button className="btn btn-secondary">Salvar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
