@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Signup() {
     const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
@@ -92,9 +93,7 @@ export default function Signup() {
                                 </div>
                             </div>
                             <p className="mb-0">
-                                <button type="reset" className="text-center btn btn-link">
-                                    Reset
-                                </button>
+                                <Link to="/">Login</Link>
                             </p>
                         </form>
 

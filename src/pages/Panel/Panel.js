@@ -1,11 +1,22 @@
 import { useState } from "react";
-import Clients from "./Clients/Clients";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+
+const pages = [
+    { url: 'products', name: 'Produtos', icon: "nav-icon bi bi-box" },
+    { url: 'clients', name: 'Clientes', icon: "nav-icon bi bi-people" },
+];
 
 export default function Panel() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
+    const navigate = useNavigate();
+
     function handleSwitchSidebarOpen() {
         setSidebarOpen(prevState => !prevState);
+    }
+
+    function handleLogout() {
+        navigate('/');
     }
 
     return (
@@ -14,10 +25,19 @@ export default function Panel() {
                 <nav className="app-header navbar navbar-expand bg-body">
                     <div className="container-fluid">
                         <ul className="navbar-nav">
-                            <li className="nav-item"> <a className="nav-link" data-lte-toggle="sidebar" onClick={() => handleSwitchSidebarOpen()} role="button"> <i className="bi bi-list"></i> </a> </li>
+                            <li className="nav-item">
+                                <a className="nav-link" data-lte-toggle="sidebar"
+                                    onClick={() => handleSwitchSidebarOpen()} role="button">
+                                    <i className="bi bi-list"></i>
+                                </a>
+                            </li>
                         </ul>
                         <ul className="navbar-nav ms-auto">
-                            <li className="nav-item"> <a className="nav-link" data-lte-toggle="fullscreen"> <i data-lte-icon="maximize" className="bi bi-arrows-fullscreen"></i> </a> </li>
+                            <li className="nav-item">
+                                <a className="nav-link" data-lte-toggle="fullscreen" onClick={handleLogout} role="button">
+                                    <i data-lte-icon="maximize" className="bi bi-arrows-fullscreen"></i>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -25,24 +45,20 @@ export default function Panel() {
                     <div className="sidebar-wrapper">
                         <nav className="mt-2">
                             <ul className="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                                <li className="nav-item"> <a className="nav-link active"> <i className="nav-icon bi bi-palette"></i>
-                                    <p>Clientes</p>
-                                </a> </li>
-                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-download"></i>
-                                    <p>Installation</p>
-                                </a> </li>
-                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-grip-horizontal"></i>
-                                    <p>Layout</p>
-                                </a> </li>
-                                <li className="nav-item"> <a className="nav-link"> <i className="nav-icon bi bi-star-half"></i>
-                                    <p>Color Mode</p>
-                                </a> </li>
+                                {pages.map(page => (
+                                    <li key={page.url} className="nav-item">
+                                        <NavLink className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} to={page.url}>
+                                            <i className={page.icon}></i>
+                                            <p>{page.name}</p>
+                                        </NavLink>
+                                    </li>
+                                ))}
                             </ul>
                         </nav>
                     </div>
                 </aside>
                 <main className="app-main">
-                    <Clients />
+                    <Outlet />
                 </main>
                 <footer className="app-footer">
                     <div className="float-end d-none d-sm-inline">Anything you want</div> <strong>

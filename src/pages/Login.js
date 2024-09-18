@@ -1,7 +1,10 @@
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/Input";
 import { useInput } from "../hooks/useInput";
 
 export default function Login() {
+    const navigate = useNavigate();
+    
     const {
         value: emailValue,
         handleInputChange: handleEmailChange,
@@ -23,7 +26,9 @@ export default function Login() {
             return;
         }
 
-        console.log(emailValue, passwordValue)
+        console.log(emailValue, passwordValue);
+
+        navigate('/panel/clients');
     }
 
     return (
@@ -54,7 +59,7 @@ export default function Login() {
                             <div className="row">
                                 <div className="col-6">
                                     <div className="d-grid">
-                                        <button type="submit" className="btn btn-link">Reset</button>
+                                        <Link to="/signup">Signup</Link>
                                     </div>
                                 </div>
                                 <div className="col-6">
