@@ -1,4 +1,21 @@
-export default function ClientsOutput({ clients, editClient, removeClient }) {
+import { useContext } from "react";
+import { ClientsContext } from "../../../../store/clients-context";
+import { useNavigate } from "react-router-dom";
+
+export default function ClientsOutput() {
+    const clientsCtx = useContext(ClientsContext);
+    const clients = clientsCtx.clients;
+
+    const navigate = useNavigate();
+
+    function onEditClient(clientId) {
+        navigate('/panel/clients/' + clientId);
+    }
+
+    function removeClient(clientId) {
+        clientsCtx.deleteClient(clientId);
+    }
+
     return (
         <div className="app-content">
             <div className="container-fluid">
@@ -27,7 +44,7 @@ export default function ClientsOutput({ clients, editClient, removeClient }) {
                                                     <td>{client.email}</td>
                                                     <td>
                                                         <div className="btn-group">
-                                                            <button className="btn btn-secondary" onClick={() => editClient(client.id)}>
+                                                            <button className="btn btn-secondary" onClick={() => onEditClient(client.id)}>
                                                                 <i className="bi bi-pencil-square"></i>
                                                             </button>
                                                             <button className="btn btn-danger" onClick={() => removeClient(client.id)}>

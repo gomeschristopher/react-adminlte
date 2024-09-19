@@ -8,6 +8,8 @@ import ClientsContextProvider from './store/clients-context';
 import Clients from './pages/Panel/Clients/Clients';
 import Products from './pages/Panel/Products/Products';
 import NotFoundPage from './pages/NotFoundPage';
+import ClientsOutput from './pages/Panel/Clients/components/ClientsOutput';
+import ClientForm from './pages/Panel/Clients/components/ClientForm';
 
 /*
 const routeDefinitions =  createRoutesFromElements(
@@ -31,7 +33,15 @@ const router = createBrowserRouter([
     path: '/panel',
     element: <Panel />,
     children: [
-      { path: 'clients', element: <Clients /> },
+      { 
+        path: 'clients', 
+        element: <Clients />,
+        children: [
+          { index: true, element: <ClientsOutput /> },
+          { path: 'new', element: <ClientForm /> },
+          { path: ':clientId', element: <ClientForm /> },
+        ]
+      },
       { path: 'products', element: <Products /> }
     ]
   }

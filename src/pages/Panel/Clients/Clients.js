@@ -1,51 +1,10 @@
-import { useContext, useState } from "react";
-
-import ClientForm from "./components/ClientForm";
-import ClientsOutput from "./components/ClientsOutput";
-import { ClientsContext } from "../../../store/clients-context";
+import { Outlet, useNavigate } from "react-router-dom";
 
 export default function Clients() {
-    const clientsCtx = useContext(ClientsContext);
-
-    const [isClientFormOpen, setIsClientFormOpen] = useState(false);
-    const [selectedClient, setSelectedClient] = useState();
-
-    const clients = clientsCtx.clients;
-
-    function handleSaveClient(clientData) {
-        if (!clientData.id) {
-            clientData = {
-                ...clientData,
-                id: Math.random()
-            };
-            clientsCtx.addClient(clientData);
-        } else {
-            clientsCtx.updateClient(clientData.id, clientData);
-        }
-
-        setIsClientFormOpen(false);
-    }
-
-    function onEditClient(clientId) {
-        console.log(clientId)
-        const client = clients.find(client => client.id === clientId);
-        setSelectedClient({ ...client });
-        setIsClientFormOpen(true);
-    }
+    const navigate = useNavigate();
 
     function handleCreateNewClient() {
-        setSelectedClient({
-            id: null,
-            name: '',
-            phone: '',
-            email: ''
-        });
-
-        setIsClientFormOpen(true);
-    }
-
-    function handleRemoveClient(clientId) {
-        clientsCtx.deleteClient(clientId);
+        navigate('/panel/clients/new');
     }
 
     return (
@@ -58,11 +17,7 @@ export default function Clients() {
                     </div>
                 </div>
             </div>
-            {isClientFormOpen ? (
-                <ClientForm onAdd={handleSaveClient} defaultValues={selectedClient} />
-            ) : (
-                <ClientsOutput clients={clients} editClient={onEditClient} removeClient={handleRemoveClient} />
-            )}
+            <Outlet />
         </>
     )
 }

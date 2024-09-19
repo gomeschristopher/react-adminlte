@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import Input from "../../../../components/Input";
 import { useInput } from "../../../../hooks/useInput";
+import { ClientsContext } from "../../../../store/clients-context";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function ClientForm({ onAdd, defaultValues }) {
+export default function ClientForm() {
+    const navigate = useNavigate();
+
+    const params = useParams();
+    const clientId = params.clientId;
+    const clientsCtx = useContext(ClientsContext);
+    const defaultValues = clientsCtx.clients.find(client => client.id === clientId);
+
     const {
         value: nameValue,
         handleInputChange: handleNameChange,
         handleInputBlur: handleNameBlur,
         hasError: nameHasError
-    } = useInput(defaultValues.name ? defaultValues.name : '',
+    } = useInput(defaultValues ? defaultValues.name : '',
         (value) => value.trim() !== '');
 
     const {
@@ -17,14 +26,14 @@ export default function ClientForm({ onAdd, defaultValues }) {
         handleInputChange: handleEmailChange,
         handleInputBlur: handleEmailBlur,
         hasError: emailHasError
-    } = useInput(defaultValues.email ? defaultValues.email : '', (value) => value.trim() !== '');
+    } = useInput(defaultValues ? defaultValues.email : '', (value) => value.trim() !== '');
 
     const {
         value: phoneValue,
         handleInputChange: handlePhoneChange,
         handleInputBlur: handlePhoneBlur,
         hasError: phoneHasError
-    } = useInput(defaultValues.phone ? defaultValues.phone : '', (value) => value.trim() !== '');
+    } = useInput(defaultValues ? defaultValues.phone : '', (value) => value.trim() !== '');
 
     const [formIsInvalid, setFormIsInvalid] = useState(false);
 
@@ -36,12 +45,26 @@ export default function ClientForm({ onAdd, defaultValues }) {
             return;
         }
 
-        onAdd({
-            id: defaultValues.id,
+        handleSaveClient({
+            id: defaultValues?.id,
             name: nameValue,
             phone: phoneValue,
             email: emailValue
         });
+    }
+
+    function handleSaveClient(clientData) {
+        if (!clientData.id) {
+            clientData = {
+                ...clientData,
+                id: (Math.random() + 1).toString(36).substring(7)
+            };
+            clientsCtx.addClient(clientData);
+        } else {
+            clientsCtx.updateClient(clientData.id, clientData);
+        }
+
+        navigate('/panel/clients');
     }
 
     return (
