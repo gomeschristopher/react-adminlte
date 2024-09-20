@@ -1,10 +1,18 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useLoaderData } from "react-router-dom";
+
 import { ClientsContext } from "../../../../store/clients-context";
 import { useNavigate } from "react-router-dom";
 
 export default function ClientsOutput() {
+    const clientsData = useLoaderData();
+
     const clientsCtx = useContext(ClientsContext);
-    const clients = clientsCtx.clients;
+
+    useEffect(() => {
+        clientsCtx.setClients(clientsData.events);
+    }, []);
+
 
     const navigate = useNavigate();
 
@@ -15,6 +23,8 @@ export default function ClientsOutput() {
     function removeClient(clientId) {
         clientsCtx.deleteClient(clientId);
     }
+
+    const clients = clientsCtx.clients;
 
     return (
         <div className="app-content">
@@ -29,9 +39,8 @@ export default function ClientsOutput() {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Nome</th>
-                                            <th>Telefone</th>
-                                            <th>Email</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -39,9 +48,8 @@ export default function ClientsOutput() {
                                         {clients.map(client => {
                                             return (
                                                 <tr key={client.id} className="align-middle">
-                                                    <td>{client.name}</td>
-                                                    <td>{client.phone}</td>
-                                                    <td>{client.email}</td>
+                                                    <td>{client.title}</td>
+                                                    <td>{client.description}</td>
                                                     <td>
                                                         <div className="btn-group">
                                                             <button className="btn btn-secondary" onClick={() => onEditClient(client.id)}>
@@ -73,4 +81,13 @@ export default function ClientsOutput() {
             </div>
         </div>
     )
+}
+
+export async function loader() {
+    const response = await fetch('http://localhost:8080/events');
+    if (!response.ok) {
+        //setError('Fetching events failed.');
+    } else {
+       return response;
+    }
 }

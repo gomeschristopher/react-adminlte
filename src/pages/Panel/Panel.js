@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useNavigation } from "react-router-dom";
 
 const pages = [
     { url: 'products', name: 'Produtos', icon: "nav-icon bi bi-box" },
@@ -10,6 +10,7 @@ export default function Panel() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     const navigate = useNavigate();
+    const navigation = useNavigation();
 
     function handleSwitchSidebarOpen() {
         setSidebarOpen(prevState => !prevState);
@@ -21,6 +22,7 @@ export default function Panel() {
 
     return (
         <div className={["layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded", sidebarOpen ? " sidebar-open" : " sidebar-collapse"]}>
+           
             <div className="app-wrapper ">
                 <nav className="app-header navbar navbar-expand bg-body">
                     <div className="container-fluid">
@@ -58,6 +60,7 @@ export default function Panel() {
                     </div>
                 </aside>
                 <main className="app-main">
+                {navigation.state === 'loading' && <p>Loading...</p>}
                     <Outlet />
                 </main>
                 <footer className="app-footer">

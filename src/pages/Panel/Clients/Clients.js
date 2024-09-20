@@ -12,7 +12,7 @@ export default function Clients() {
             <div className="app-content-header">
                 <div className="container-fluid">
                     <div className="d-flex justify-content-between">
-                        <h3 className="mb-0">Clientes</h3>
+                        <h3 className="mb-0">fetchEvents</h3>
                         <button className="btn btn-secondary" onClick={handleCreateNewClient}>Novo</button>
                     </div>
                 </div>
