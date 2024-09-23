@@ -22,8 +22,7 @@ export default function Panel() {
 
     return (
         <div className={["layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded", sidebarOpen ? " sidebar-open" : " sidebar-collapse"]}>
-           
-            <div className="app-wrapper ">
+            <div className="app-wrapper">
                 <nav className="app-header navbar navbar-expand bg-body">
                     <div className="container-fluid">
                         <ul className="navbar-nav">
