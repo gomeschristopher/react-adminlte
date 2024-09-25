@@ -17,6 +17,7 @@ export default function Panel() {
     }
 
     function handleLogout() {
+        localStorage.removeItem('token');
         navigate('/');
     }
 

@@ -1,9 +1,8 @@
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
 
 import './App.css';
-import Login from './pages/Login';
+import Authentication, { action as authAction } from './pages/Authentication';
 import Panel from './pages/Panel/Panel';
-import Signup from './pages/Signup';
 import ClientsContextProvider from './store/clients-context';
 import Clients from './pages/Panel/Clients/Clients';
 import Products from './pages/Panel/Products/Products';
@@ -12,6 +11,7 @@ import ClientsOutput, { actionDeleteClient, loader as clientsLoader } from './pa
 import ClientForm, { loader as clientLoader, action as saveClientAction } from './pages/Panel/Clients/components/ClientForm';
 import ErrorPage from './pages/Error';
 import Error from './pages/Panel/Error';
+import { checkAuthLoader, tokenLoader } from './util/auth';
 
 /*
 const routeDefinitions =  createRoutesFromElements(
@@ -27,14 +27,15 @@ const routeDefinitions =  createRoutesFromElements(
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Login />,
+    element: <Authentication />,
     errorElement: <ErrorPage />,
+    action: authAction
   },
-  { path: '/signup', element: <Signup /> },
   {
     path: '/panel',
+    id: 'panel',
     element: <Panel />,
-
+    loader: checkAuthLoader,
     children: [
       {
         path: 'clients',

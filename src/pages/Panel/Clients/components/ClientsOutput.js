@@ -1,22 +1,16 @@
 import { Suspense, useContext, useEffect } from "react";
-import { Await, defer, json, redirect, useLoaderData, useSubmit } from "react-router-dom";
+import { Await, defer, json, redirect, useActionData, useLoaderData, useSubmit } from "react-router-dom";
 
 import { ClientsContext } from "../../../../store/clients-context";
 import { useNavigate } from "react-router-dom";
+import { getAuthToken } from "../../../../util/auth";
 
 export default function ClientsOutput() {
-    const { clients } = useLoaderData();
-    //const clients = clientsData;
+    const loaderData = useLoaderData();
 
+    const actionData = useActionData();
+    
     const submit = useSubmit();
-
-    //const clientsCtx = useContext(ClientsContext);
-
-    //useEffect(() => {
-    //    console.log(clientsData)
-    //    clientsCtx.setClients(clientsData);
-    //}, []);
-
 
     const navigate = useNavigate();
 
@@ -36,11 +30,18 @@ export default function ClientsOutput() {
 
     return (
         <Suspense fallback={<div className="text-center"><div className="spinner-border text-secondary" role="status"> <span className="visually-hidden">Loading...</span> </div></div>}>
-            <Await resolve={clients}>
+            <Await resolve={loaderData.clients}>
                 {(loadedClients) => (
                     <div className="app-content">
                         <div className="container-fluid">
                             <div className="row">
+                                {(actionData) && (
+                                    <div className="col-12 mb-4">
+                                        <div className="callout callout-danger">
+                                            {actionData.message}
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="col-md-12">
                                     <div className="card mb-4">
                                         <div className="card-header">
@@ -56,27 +57,29 @@ export default function ClientsOutput() {
                                                         <th></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    {loadedClients.map(client => {
-                                                        return (
-                                                            <tr key={client.id} className="align-middle">
-                                                                <td>{client.name}</td>
-                                                                <td>{client.email}</td>
-                                                                <td>{client.phone}</td>
-                                                                <td>
-                                                                    <div className="btn-group">
-                                                                        <button className="btn btn-secondary" onClick={() => onEditClient(client.id)}>
-                                                                            <i className="bi bi-pencil-square"></i>
-                                                                        </button>
-                                                                        <button className="btn btn-danger" onClick={() => removeClient(client.id)}>
-                                                                            <i className="bi bi-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    })}
-                                                </tbody>
+                                                {loadedClients.length && (
+                                                    <tbody>
+                                                        {loadedClients.map(client => {
+                                                            return (
+                                                                <tr key={client.id} className="align-middle">
+                                                                    <td>{client.name}</td>
+                                                                    <td>{client.email}</td>
+                                                                    <td>{client.phone}</td>
+                                                                    <td>
+                                                                        <div className="btn-group">
+                                                                            <button className="btn btn-secondary" onClick={() => onEditClient(client.id)}>
+                                                                                <i className="bi bi-pencil-square"></i>
+                                                                            </button>
+                                                                            <button className="btn btn-danger" onClick={() => removeClient(client.id)}>
+                                                                                <i className="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                )}
                                             </table>
                                         </div>
                                         <div className="card-footer">
@@ -100,11 +103,20 @@ export default function ClientsOutput() {
 }
 
 async function loadClients() {
-    const response = await fetch('http://localhost:80/api/contacts');
+    const authToken =  getAuthToken();
+
+    const response = await fetch('http://localhost:80/api/contacts', {
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + authToken
+        }
+    });
     if (!response.ok) {
+        const error = await response.text()
+
         throw json(
-            { message: 'Could not fetch the clients.' },
-            { status: 500 }
+            { message: JSON.parse(error).message },
+            { status: response.status }
         );
     } else {
         const responseData = await response.json();
@@ -112,9 +124,9 @@ async function loadClients() {
     }
 }
 
-export function loader() {
+export async function loader() {
     return defer({
-        clients: loadClients()
+        clients: await loadClients()
     });
 }
 
@@ -133,9 +145,9 @@ export async function actionDeleteClient({ request, params }) {
     if (!response.ok) {
         const error = await response.text()
 
-        throw json(
+        return json(
             { message: JSON.parse(error).message },
-            { status: 500 }
+            { status: response.status }
         );
     }
 

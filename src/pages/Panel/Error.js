@@ -5,11 +5,7 @@ export default function Error() {
 
     const status = error.status;
     let title = 'Error';
-    let message = 'An error occurred!';
-
-    if (status === 500) {
-        message = error.data.message;
-    }
+    let message = error.data.message;
 
     if (status === 404) {
         title = 'Not found';
